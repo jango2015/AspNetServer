@@ -42,13 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HttpProcessor.cs" />
+    <Compile Include="ByteParser.cs" />
+    <Compile Include="ByteString.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="Host.cs" />
+    <Compile Include="Messages.cs" />
+    <Compile Include="Request.cs" />
     <Compile Include="RequestInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleHost.cs" />
-    <Compile Include="WebServer.cs" />
-    <Compile Include="WorkerRequest.cs" />
+    <Compile Include="Server.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

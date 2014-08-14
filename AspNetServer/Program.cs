@@ -22,33 +22,18 @@ namespace AspNetServer
                 port = 80;
             }
 
-            InitHostFile(dir);
-            SimpleHost host= (SimpleHost) ApplicationHost.CreateApplicationHost(typeof (SimpleHost), "/", dir);
-            host.Config("/", dir);
-
-            WebServer server = new WebServer(host, port);
+            var virtualPath = "/";
+            Server server = new Server(port, virtualPath, dir);
             server.Start();
+
             OpenUrl("http://127.0.0.1/default.aspx");
 
+            Console.WriteLine("please press Entry to exit.");
             var key = Console.ReadKey();
             while ( key.Key != ConsoleKey.Enter)
             {
                 Thread.Sleep(1000);
             }
-            Console.ReadKey();
-        }
-
-        //需要拷贝执行文件 才能创建ASP.NET应用程序域
-        private static void InitHostFile(string dir)
-        {
-            string path = Path.Combine(dir, "bin");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            string source = Assembly.GetExecutingAssembly().Location;
-            string target = path + "/" + Assembly.GetExecutingAssembly().GetName().Name + ".exe";
-            if(File.Exists(target))
-                File.Delete(target);
-            File.Copy(source, target);
         }
 
         public static void OpenUrl(string url = "")
@@ -66,5 +51,6 @@ namespace AspNetServer
                 System.Diagnostics.Process.Start(filename, url);
             }
         }
+
     }
 }
