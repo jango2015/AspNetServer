@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web.Hosting;
 
 namespace AspNetServer
@@ -28,6 +29,13 @@ namespace AspNetServer
             WebServer server = new WebServer(host, port);
             server.Start();
             OpenUrl("http://127.0.0.1/default.aspx");
+
+            var key = Console.ReadKey();
+            while ( key.Key != ConsoleKey.Enter)
+            {
+                Thread.Sleep(1000);
+            }
+            Console.ReadKey();
         }
 
         //需要拷贝执行文件 才能创建ASP.NET应用程序域
