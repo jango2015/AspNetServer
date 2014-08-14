@@ -39,32 +39,60 @@ namespace AspNetServer
             _socket = socket;
         }
 
+        internal int WaitForRequestBytes()
+        {
+            int available = 0;
+            try
+            {
+                if (this._socket.Available == 0)
+                {
+                    this._socket.Poll(0x186a0, SelectMode.SelectRead);
+                    if ((this._socket.Available == 0) && this._socket.Connected)
+                    {
+                        this._socket.Poll(0x1c9c380, SelectMode.SelectRead);
+                    }
+                }
+                available = this._socket.Available;
+            }
+            catch
+            {
+            }
+            return available;
+        }
+
         public void ProcessRequest()
         {
             try
             {
-                RequestInfo requestInfo = ParseRequest();
-                if (requestInfo != null)
+                if (WaitForRequestBytes() == 0)
                 {
-                    string staticContentType = GetStaticContentType(requestInfo);
-                    if (!string.IsNullOrEmpty(staticContentType))
-                    {
-                        WriteFileResponse(requestInfo.FilePath, staticContentType);
-                    }
-                    else if (requestInfo.FilePath.EndsWith("/"))
-                    {
-                        WriteDirResponse(requestInfo.FilePath);
-                    }
-                    else
-                    {
-                        _host.ProcessRequest(this, requestInfo);
-                        //WorkerRequest workerRequest = new WorkerRequest(this, requestInfo);
-                        //HttpRuntime.ProcessRequest(workerRequest);
-                    }
+                    SendErrorResponse(400);
                 }
                 else
                 {
-                    SendErrorResponse(400);
+                    RequestInfo requestInfo = ParseRequest();
+                    if (requestInfo != null)
+                    {
+                        string staticContentType = GetStaticContentType(requestInfo);
+                        if (!string.IsNullOrEmpty(staticContentType))
+                        {
+                            WriteFileResponse(requestInfo.FilePath, staticContentType);
+                        }
+                        else if (requestInfo.FilePath.EndsWith("/"))
+                        {
+                            WriteDirResponse(requestInfo.FilePath);
+                        }
+                        else
+                        {
+                            _host.ProcessRequest(this, requestInfo);
+                            //WorkerRequest workerRequest = new WorkerRequest(this, requestInfo);
+                            //HttpRuntime.ProcessRequest(workerRequest);
+                        }
+                    }
+                    else
+                    {
+                        SendErrorResponse(400);
+                    }
                 }
             }
             finally
