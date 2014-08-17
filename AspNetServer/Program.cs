@@ -54,11 +54,12 @@ namespace AspNetServer
             //server.Start();
             //server.Stop();
 
-            OpenUrl("http://127.0.0.1/default.aspx");
+            if (args.Length == 0)
+            {
+                OpenUrl("http://127.0.0.1/default.aspx");
+            }
 
             StartService();
-
-            
 
             //Console.WriteLine("please press Entry to exit.");
             //var key = Console.ReadKey();

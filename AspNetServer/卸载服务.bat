@@ -1,0 +1,2 @@
+AspNetServer.exe uninstall
+pause
